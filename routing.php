@@ -1,14 +1,16 @@
 <?php
 
+$parameters = array();
 // CLI execution
 if(PHP_SAPI == 'cli') {
 	$arguments_structure = array(
 		'controller',
-		'username',
+		'topic',
 	);
 	if($argc >= 2) {
 		foreach($arguments_structure AS $key => $component) {
 			if(isset($argv[$key+1])) {
+				$parameters[] = $argv[$key+1];
 				${$component} = $argv[$key+1];
 			}
 		}
@@ -40,6 +42,7 @@ if(PHP_SAPI == 'cli') {
 	if(is_array($uri_segments)) {
 		foreach($url_structure AS $key => $component) {
 			if(isset($uri_segments[$key+1])) {
+				$parameters[] = $argv[$key+1];
 				${$component} = $uri_segments[$key+1];
 			}
 		}
