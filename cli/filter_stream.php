@@ -1,10 +1,11 @@
 <?php
 
 use j3j5\TwitterApio;
-// register_shutdown_function('shutdown');
+
+register_shutdown_function('shutdown');
 // Catch Ctrl+C, kill and SIGTERM (Rollback)
-// pcntl_signal(SIGTERM, 'kill_shutdown');
-// pcntl_signal(SIGINT, 'kill_shutdown');
+pcntl_signal(SIGTERM, 'kill_shutdown');
+pcntl_signal(SIGINT, 'kill_shutdown');
 
 	if(empty($topic)) {
 		$log->addError("You must provide a topic.");
@@ -83,7 +84,7 @@ use j3j5\TwitterApio;
  *
  * @return FALSE
  *
- * @author Julio Foulquié <julio@tnwlabs.com>
+ * @author Julio Foulquié <jfoulquie@gmail.com.com>
  */
 function my_streaming_callback($data, $length, $metrics) {
 	global $log, $twitter_settings, $api, $total_msg;
@@ -104,8 +105,10 @@ function my_streaming_callback($data, $length, $metrics) {
  *
  * @param String $data JSON object containing the event information
  * @param Int $length The length of the string $data
- * @param ? $metrics
+ * @param Array $metrics Stream metrics
  *
+ * @author Julio Foulquié <jfoulquie@gmail.com.com>
+
  * @return While returning FALSE the stream will keep running, in case of
  * 			returning TRUE the stream will close the connection.
  */
@@ -207,28 +210,28 @@ function my_streaming_callback2($data, $length, $metrics) {
 	return FALSE;
 }
 
-// function shutdown() {
-// 	global $log, $total_msg, $total_replies, $msg_used;
-//
-// 	$log->addInfo("Total messages processed: $total_msg");
-// 	$log->addInfo("Total replies: " . print_r($total_replies, TRUE));
-// 	$log->addInfo("Total messages: " . print_r($msg_used, TRUE));
-// }
-//
-// /**
-//  * Method, that is executed, if script has been killed by
-//  * SIGINT: Ctrl+C
-//  * SIGTERM: kill
-//  *
-//  * @param int $signal
-//  *
-//  */
-// function kill_shutdown($signal) {
-// 	global $log;
-// 	if ($signal === SIGINT || $signal === SIGTERM) {
-// 		$log->addInfo("Ouch, I've been killed again! :(");
-// 	} else {
-// 		$log->addError("Weird signal caught: $signal");
-// 	}
-// 	exit; // After this, stream_shutdown is called
-// }
+function shutdown() {
+	global $log, $total_msg, $total_replies, $msg_used;
+
+	$log->addInfo("Total messages processed: $total_msg");
+	$log->addInfo("Total replies: " . print_r($total_replies, TRUE));
+	$log->addInfo("Total messages: " . print_r($msg_used, TRUE));
+}
+
+/**
+ * Method, that is executed, if script has been killed by
+ * SIGINT: Ctrl+C
+ * SIGTERM: kill
+ *
+ * @param int $signal
+ *
+ */
+function kill_shutdown($signal) {
+	global $log;
+	if ($signal === SIGINT || $signal === SIGTERM) {
+		$log->addInfo("Ouch, I've been killed again! :(");
+		exit; // After this, stream_shutdown is called
+	} else {
+		$log->addError("Weird signal caught: $signal");
+	}
+}
